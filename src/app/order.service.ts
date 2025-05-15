@@ -9,7 +9,7 @@ import { throwError } from 'rxjs';
 })
 export class OrderService {
   lastReport: string = '';
-  
+
   constructor(private http: HttpClient) { }
 
   create(o: Order) {
@@ -17,13 +17,13 @@ export class OrderService {
       name: o.name,
       article: o.article
     })
-    .pipe(
-      catchError(error => {
-        alert('Errore durante l\'invio dell\'ordine!');
-        return throwError(() => error);
-      })
-    )
-    .subscribe();
+      .pipe(
+        catchError(error => {
+          alert('Errore durante l\'invio dell\'ordine!');
+          return throwError(() => error);
+        })
+      )
+      .subscribe();
   }
 
   report() {
@@ -37,5 +37,25 @@ export class OrderService {
       .subscribe(result => {
         this.lastReport = result;
       });
+  }
+
+  getAllObservable() {
+    return this.http.get<Order[]>('http://localhost:8080/api/order')
+      .pipe(
+        catchError(error => {
+          alert('Errore nel recupero degli ordini!');
+          return throwError(() => error);
+        })
+      );
+  }
+
+  deleteObservable(order: Order) {
+    return this.http.delete('http://localhost:8080/api/order', { body: order })
+      .pipe(
+        catchError(error => {
+          alert('Errore nella cancellazione dell\'ordine');
+          return throwError(() => error);
+        })
+      );
   }
 }

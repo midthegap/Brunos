@@ -4,7 +4,7 @@ import { BrunoListComponent } from "./bruno-list/bruno-list.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, BrunoListComponent],
+  imports: [BrunoListComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
