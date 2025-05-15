@@ -1,0 +1,30 @@
+<input type="text" 
+    placeholder="Il tuo nome" 
+    [(ngModel)]="username">
+
+<ul>
+    <li *ngFor="let order of orders">
+        <span>{{ order.name }}: {{ order.article }}</span>
+        &nbsp;<button (click)="metoo(order)">Anch'io!</button>
+        &nbsp;<button>Cancella</button>
+    </li>
+
+</ul>
+
+<input type="text" 
+    placeholder="Cosa vuoi mangiare?" 
+    [(ngModel)]="article">
+&nbsp;
+<button (click)="addOrder()">Aggiungi</button>
+<p>
+    <button>Cancella tutto</button>
+    &nbsp;
+    <button (click)="report()">Report</button>
+</p>
+
+<hr>
+
+<div *ngIf="reportText">
+  <h3>Report</h3>
+  <pre>{{ reportText }}</pre>
+</div>
