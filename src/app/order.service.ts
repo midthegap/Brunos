@@ -3,17 +3,19 @@ import { Order } from './bruno-list/bruno-list.component';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
+  private readonly baseUrl = environment.apiUrl;
   lastReport: string = '';
 
   constructor(private http: HttpClient) { }
 
   create(o: Order) {
-    this.http.post('http://localhost:8080/api/order', {
+    this.http.post(this.baseUrl + '/api/order', {
       name: o.name,
       article: o.article
     })
@@ -27,7 +29,7 @@ export class OrderService {
   }
 
   report() {
-    this.http.get('http://localhost:8080/api/order/report', { responseType: 'text' })
+    this.http.get(this.baseUrl + '/api/order/report', { responseType: 'text' })
       .pipe(
         catchError(error => {
           alert('Errore nel generare il report!');
@@ -40,7 +42,7 @@ export class OrderService {
   }
 
   getAllObservable() {
-    return this.http.get<Order[]>('http://localhost:8080/api/order')
+    return this.http.get<Order[]>(this.baseUrl + '/api/order')
       .pipe(
         catchError(error => {
           alert('Errore nel recupero degli ordini!');
@@ -50,12 +52,17 @@ export class OrderService {
   }
 
   deleteObservable(order: Order) {
-    return this.http.delete('http://localhost:8080/api/order', { body: order })
+    return this.http.delete(this.baseUrl + '/api/order', { body: order })
       .pipe(
         catchError(error => {
           alert('Errore nella cancellazione dell\'ordine');
           return throwError(() => error);
         })
       );
+  }
+
+  reset() {
+    return this.http.delete(this.baseUrl + '/api/order/all')
+      .subscribe();
   }
 }

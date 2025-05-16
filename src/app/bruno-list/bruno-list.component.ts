@@ -55,9 +55,8 @@ export class BrunoListComponent {
     }
 
     const newOrder: Order = { name: name, article: article };
-    this.orders.push(newOrder);
-
     this.orderService.create(newOrder);
+    this.orders.push(newOrder);
 
     // clear input
     this.article = '';
@@ -80,5 +79,10 @@ export class BrunoListComponent {
       next: () => this.loadOrders(),
       error: err => console.error('Delete failed', err)
     });
+  }
+
+  reset() {
+    this.orderService.reset();
+    this.orders = [];
   }
 }
