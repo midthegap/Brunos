@@ -62,6 +62,9 @@ export class BrunoListComponent {
   }
 
   private add(name: string, article: string) {
+    name = name.trim();
+    article = article.trim();
+
     if (name.length == 0) {
       alert('Metti il nome, furbetto!');
       return;

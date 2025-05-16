@@ -35,7 +35,7 @@ export class OrderService {
           return throwError(() => error);
         })
       )
-      .subscribe();
+      .subscribe(() => this.clearReport());
   }
 
   report() {
@@ -69,11 +69,11 @@ export class OrderService {
           return throwError(() => error);
         })
       )
-      .subscribe();
+      .subscribe(() => this.clearReport());
   }
 
   reset() {
-    this.lastReport = '';
+    this.clearReport();
     return this.http.delete(this.baseUrl + '/api/order/all')
       .subscribe();
   }
@@ -94,5 +94,9 @@ export class OrderService {
 
   private onSocketConnect() {
     console.debug("Socket IO connected successfully!");
+  }
+
+  private clearReport() {
+    this.lastReport = '';
   }
 }
