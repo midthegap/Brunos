@@ -96,10 +96,14 @@ export class BrunoListComponent {
   }
 
   delete(selected: Order) {
-    this.orderService.delete(selected);
+    if (window.confirm('Sei sicuro di voler cancellare?')) {
+      this.orderService.delete(selected);
+    }
   }
 
   reset() {
-    this.orderService.reset();
+    if (window.confirm('Sei sicuro di voler cancellare tutti gli ordini?')) {
+      this.orderService.reset();
+    }
   }
 }
