@@ -1,10 +1,12 @@
 <input type="text" 
     placeholder="Il tuo nome" 
-    [(ngModel)]="username">
+    [(ngModel)]="username"
+    (keyup.enter)="addOrder()">
 &nbsp;
 <input type="text" 
     placeholder="Cosa vuoi mangiare?" 
-    [(ngModel)]="article">
+    [(ngModel)]="article"
+    (keyup.enter)="addOrder()">
 &nbsp;
 <button (click)="addOrder()">Aggiungi</button>
 

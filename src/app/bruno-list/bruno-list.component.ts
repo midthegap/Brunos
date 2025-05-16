@@ -22,6 +22,7 @@ export class BrunoListComponent {
   constructor(private orderService: OrderService) { }
 
   ngOnInit() {
+    this.orderService.connectToSocket();
     this.loadOrders();
   }
 

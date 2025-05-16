@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { environment } from '../environments/environment';
+import { Socket } from 'ngx-socket-io';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class OrderService {
   private readonly baseUrl = environment.apiUrl;
   lastReport: string = '';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private socketIo: Socket) { }
 
   create(o: Order) {
     this.http.post(this.baseUrl + '/api/order', {
@@ -64,5 +65,27 @@ export class OrderService {
   reset() {
     return this.http.delete(this.baseUrl + '/api/order/all')
       .subscribe();
+  }
+
+  public connectToSocket() {
+console.log("socketIo", this.socketIo);
+
+    this.socketIo.on("connect", () => this.onSocketConnect());
+    this.socketIo.on("disconnect", () => this.onSocketDisconnect());
+
+    // custom events from socket IO
+    this.socketIo.on("order", (data: Order) => this.onNewOrder(data));
+  }
+
+  private onNewOrder(data: Order): void {
+    throw new Error('Method not implemented.');
+  }
+
+  private onSocketDisconnect() {
+    console.debug("Socket disconnected!");
+  }
+
+  private onSocketConnect() {
+    console.debug("Socket IO connected successfully!");
   }
 }

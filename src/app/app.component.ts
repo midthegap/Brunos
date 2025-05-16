@@ -9,5 +9,5 @@ import { BrunoListComponent } from "./bruno-list/bruno-list.component";
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'Counter';
+  title = 'Brunos';
 }
