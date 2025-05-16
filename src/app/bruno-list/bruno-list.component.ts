@@ -2,6 +2,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { OrderService } from '../order.service';
+import { Subscription } from 'rxjs';
 
 export interface Order {
   name: string;
@@ -18,17 +19,19 @@ export class BrunoListComponent {
   username: string = '';
   article: string = '';
   orders: Order[] = [];
+  private newOrderSub?: Subscription;
 
   constructor(private orderService: OrderService) { }
 
   ngOnInit() {
     this.orderService.connectToSocket();
-    this.loadOrders();
+    this.newOrderSub = this.orderService.newOrder$.subscribe(order => {
+      this.orders.push(order);
+    });
   }
 
-  private loadOrders() {
-    this.orderService.getAllObservable().subscribe(
-      orders => { this.orders = orders; });
+  ngOnDestroy() {
+    this.newOrderSub?.unsubscribe();
   }
 
   onArticleChange(event: Event) {
@@ -57,7 +60,6 @@ export class BrunoListComponent {
 
     const newOrder: Order = { name: name, article: article };
     this.orderService.create(newOrder);
-    this.orders.push(newOrder);
 
     // clear input
     this.article = '';
@@ -77,7 +79,7 @@ export class BrunoListComponent {
 
   delete(selected: Order) {
     this.orderService.deleteObservable(selected).subscribe({
-      next: () => this.loadOrders(),
+      next: () => console.log("TODO"), //this.loadOrders(),
       error: err => console.error('Delete failed', err)
     });
   }

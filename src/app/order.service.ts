@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Order } from './bruno-list/bruno-list.component';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { throwError, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
 import { Socket } from 'ngx-socket-io';
 
@@ -12,6 +12,9 @@ import { Socket } from 'ngx-socket-io';
 export class OrderService {
   private readonly baseUrl = environment.apiUrl;
   lastReport: string = '';
+
+  private newOrderSubject = new Subject<Order>();
+  newOrder$ = this.newOrderSubject.asObservable();
 
   constructor(private http: HttpClient, private socketIo: Socket) { }
 
@@ -68,8 +71,6 @@ export class OrderService {
   }
 
   public connectToSocket() {
-console.log("socketIo", this.socketIo);
-
     this.socketIo.on("connect", () => this.onSocketConnect());
     this.socketIo.on("disconnect", () => this.onSocketDisconnect());
 
@@ -77,8 +78,8 @@ console.log("socketIo", this.socketIo);
     this.socketIo.on("order", (data: Order) => this.onNewOrder(data));
   }
 
-  private onNewOrder(data: Order): void {
-    throw new Error('Method not implemented.');
+  private onNewOrder(order: Order): void {
+    this.newOrderSubject.next(order);
   }
 
   private onSocketDisconnect() {
