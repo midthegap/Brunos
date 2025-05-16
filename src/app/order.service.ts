@@ -16,6 +16,12 @@ export class OrderService {
   private newOrderSubject = new Subject<Order>();
   newOrder$ = this.newOrderSubject.asObservable();
 
+  private deleteSubject = new Subject<Order>();
+  deleteOrder$ = this.deleteSubject.asObservable();
+
+  private resetSubject = new Subject<void>();
+  reset$ = this.resetSubject.asObservable();
+
   constructor(private http: HttpClient, private socketIo: Socket) { }
 
   create(o: Order) {
@@ -55,17 +61,19 @@ export class OrderService {
       );
   }
 
-  deleteObservable(order: Order) {
+  delete(order: Order) {
     return this.http.delete(this.baseUrl + '/api/order', { body: order })
       .pipe(
         catchError(error => {
           alert('Errore nella cancellazione dell\'ordine');
           return throwError(() => error);
         })
-      );
+      )
+      .subscribe();
   }
 
   reset() {
+    this.lastReport = '';
     return this.http.delete(this.baseUrl + '/api/order/all')
       .subscribe();
   }
@@ -75,11 +83,9 @@ export class OrderService {
     this.socketIo.on("disconnect", () => this.onSocketDisconnect());
 
     // custom events from socket IO
-    this.socketIo.on("order", (data: Order) => this.onNewOrder(data));
-  }
-
-  private onNewOrder(order: Order): void {
-    this.newOrderSubject.next(order);
+    this.socketIo.on("order", (order: Order) => { this.newOrderSubject.next(order) });
+    this.socketIo.on("delete", (order: Order) => { this.deleteSubject.next(order) });
+    this.socketIo.on("reset", () => { this.resetSubject.next() });
   }
 
   private onSocketDisconnect() {

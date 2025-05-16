@@ -19,19 +19,37 @@ export class BrunoListComponent {
   username: string = '';
   article: string = '';
   orders: Order[] = [];
+
+  // subscriptions for orders updates
   private newOrderSub?: Subscription;
+  private deleteOrderSub?: Subscription;
+  private resetSub?: Subscription;
 
   constructor(private orderService: OrderService) { }
 
   ngOnInit() {
-    this.orderService.connectToSocket();
     this.newOrderSub = this.orderService.newOrder$.subscribe(order => {
       this.orders.push(order);
     });
+
+    this.deleteOrderSub = this.orderService.deleteOrder$.subscribe(order => {
+      const index = this.orders.findIndex(o => o.name === order.name && o.article === order.article);
+      if (index !== -1) {
+        this.orders.splice(index, 1);
+      }
+    });
+
+    this.resetSub = this.orderService.reset$.subscribe(() => {
+      this.orders = [];
+    });
+
+    this.orderService.connectToSocket();
   }
 
   ngOnDestroy() {
     this.newOrderSub?.unsubscribe();
+    this.deleteOrderSub?.unsubscribe();
+    this.resetSub?.unsubscribe();
   }
 
   onArticleChange(event: Event) {
@@ -78,14 +96,10 @@ export class BrunoListComponent {
   }
 
   delete(selected: Order) {
-    this.orderService.deleteObservable(selected).subscribe({
-      next: () => console.log("TODO"), //this.loadOrders(),
-      error: err => console.error('Delete failed', err)
-    });
+    this.orderService.delete(selected);
   }
 
   reset() {
     this.orderService.reset();
-    this.orders = [];
   }
 }
