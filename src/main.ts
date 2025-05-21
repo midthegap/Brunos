@@ -8,7 +8,7 @@ import { environment } from './environments/environment';
 const socketIoConfig: SocketIoConfig = {
   url: environment.socketIOUrl,
   options: {
-    autoConnect: true,
+    autoConnect: false,
     reconnection: true,
     reconnectionDelay: 5000
   }

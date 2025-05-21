@@ -29,21 +29,20 @@ export class BrunoListComponent {
 
   ngOnInit() {
     this.newOrderSub = this.orderService.newOrder$.subscribe(order => {
+      console.log("Received order", order);
       this.orders.push(order);
     });
-
+    
     this.deleteOrderSub = this.orderService.deleteOrder$.subscribe(order => {
       const index = this.orders.findIndex(o => o.name === order.name && o.article === order.article);
       if (index !== -1) {
         this.orders.splice(index, 1);
       }
     });
-
+    
     this.resetSub = this.orderService.reset$.subscribe(() => {
       this.orders = [];
     });
-
-    this.orderService.connectToSocket();
   }
 
   ngOnDestroy() {

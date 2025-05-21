@@ -22,7 +22,10 @@ export class OrderService {
   private resetSubject = new Subject<void>();
   reset$ = this.resetSubject.asObservable();
 
-  constructor(private http: HttpClient, private socketIo: Socket) { }
+  constructor(private http: HttpClient, private socketIo: Socket) {
+    this.registerSocketEvents();
+    this.socketIo.connect();
+  }
 
   create(o: Order) {
     this.http.post(this.baseUrl + '/api/order', {
@@ -51,16 +54,6 @@ export class OrderService {
       });
   }
 
-  getAllObservable() {
-    return this.http.get<Order[]>(this.baseUrl + '/api/order')
-      .pipe(
-        catchError(error => {
-          alert('Errore nel recupero degli ordini!');
-          return throwError(() => error);
-        })
-      );
-  }
-
   delete(order: Order) {
     return this.http.delete(this.baseUrl + '/api/order', { body: order })
       .pipe(
@@ -78,7 +71,7 @@ export class OrderService {
       .subscribe();
   }
 
-  public connectToSocket() {
+  private registerSocketEvents() {
     this.socketIo.on("connect", () => this.onSocketConnect());
     this.socketIo.on("disconnect", () => this.onSocketDisconnect());
 
