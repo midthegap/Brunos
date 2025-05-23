@@ -5,7 +5,8 @@ body {
 
 .horizontal {
     display: flex;
-    gap: 8px;
+    justify-content: space-evenly;
+    /* gap: 8px; */
 }
 
 input[type="text"] {
@@ -77,6 +78,24 @@ pre {
     font-size: 1rem;
     color: #333;
     overflow-x: auto;
+}
+
+.toast {
+    background: lime;
+    color: black;
+    font-weight: bolder;
+    padding: 12px 20px;
+    position: fixed;
+    top: 32px;
+    right: 32px;
+    border-radius: 6px;
+    border: 3px solid;
+    border-color: #3b9e48;
+    z-index: 1000;
+}
+
+.report {
+    margin: 0 12px;
 }
 
 @media (max-width: 600px) {

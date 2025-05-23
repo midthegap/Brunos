@@ -20,6 +20,7 @@ export class BrunoListComponent {
   username: string = '';
   article: string = '';
   orders: Order[] = [];
+  toastVisible = false;
 
   // subscriptions for orders updates
   private newOrderSub?: Subscription;
@@ -96,6 +97,15 @@ export class BrunoListComponent {
 
   get reportText(): string {
     return this.orderService.lastReport;
+  }
+
+  copyReport() {
+    if (this.reportText) {
+      navigator.clipboard.writeText(this.reportText).then(() => {
+        this.toastVisible = true;
+        setTimeout(() => this.toastVisible = false, 3000);
+      });
+    }
   }
 
   delete(selected: Order) {

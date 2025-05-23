@@ -17,19 +17,23 @@
 
             </ul>
 
-            <p>
+            <div class="horizontal">
                 <button (click)="reset()">Cancella tutto</button>
-                &nbsp;
                 <button (click)="report()">Report</button>
-            </p>
+            </div>
 
         </div>
     </div>
 
-    <div *ngIf="reportText">
-        <h3>Report</h3>
+    <div *ngIf="reportText" class="report">
         <pre>{{ reportText }}</pre>
+        <div *ngIf="toastVisible" class="toast">
+            Copiato negli appunti!
+        </div>
+        <button (click)="copyReport()">Copia rapporto</button>
     </div>
 </div>
+
+<hr>
 
 <app-chat [sender]="username"></app-chat>
