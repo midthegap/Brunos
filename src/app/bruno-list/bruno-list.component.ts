@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { OrderService } from '../order.service';
 import { Subscription } from 'rxjs';
+import { ChatComponent } from '../chat/chat.component';
 
 export interface Order {
   name: string;
@@ -11,7 +12,7 @@ export interface Order {
 
 @Component({
   selector: 'app-bruno-list',
-  imports: [NgFor, FormsModule, NgIf],
+  imports: [NgFor, FormsModule, NgIf, ChatComponent],
   templateUrl: './bruno-list.component.html',
   styleUrl: './bruno-list.component.css'
 })

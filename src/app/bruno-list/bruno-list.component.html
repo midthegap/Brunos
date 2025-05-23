@@ -1,35 +1,35 @@
-<input type="text" 
-    placeholder="Il tuo nome" 
-    [(ngModel)]="username"
-    (keyup.enter)="addOrder()">
-&nbsp;
-<input type="text" 
-    placeholder="Cosa vuoi mangiare?" 
-    [(ngModel)]="article"
-    (keyup.enter)="addOrder()">
-&nbsp;
-<button (click)="addOrder()">Aggiungi</button>
+<div class="horizontal">
+    <div>
+        <div class="horizontal">
+            <input type="text" placeholder="Il tuo nome" [(ngModel)]="username" (keyup.enter)="addOrder()">
+            <input type="text" placeholder="Cosa vuoi mangiare?" [(ngModel)]="article" (keyup.enter)="addOrder()">
+            <button (click)="addOrder()">Aggiungi</button>
+        </div>
+        <div>
+            <ul>
+                <li *ngFor="let order of orders">
+                    <span>{{ order.name }}: {{ order.article }}</span>
+                    <span>
+                        &nbsp;<button (click)="metoo(order)">Anch'io!</button>
+                        &nbsp;<button (click)="delete(order)">Cancella</button>
+                    </span>
+                </li>
 
-<ul>
-    <li *ngFor="let order of orders">
-        <span>{{ order.name }}: {{ order.article }}</span>
-        <span>
-            &nbsp;<button (click)="metoo(order)">Anch'io!</button>
-            &nbsp;<button (click)="delete(order)">Cancella</button>
-        </span>
-    </li>
+            </ul>
 
-</ul>
+            <p>
+                <button (click)="reset()">Cancella tutto</button>
+                &nbsp;
+                <button (click)="report()">Report</button>
+            </p>
 
-<p>
-    <button (click)="reset()">Cancella tutto</button>
-    &nbsp;
-    <button (click)="report()">Report</button>
-</p>
+        </div>
+    </div>
 
-<hr>
-
-<div *ngIf="reportText">
-  <h3>Report</h3>
-  <pre>{{ reportText }}</pre>
+    <div *ngIf="reportText">
+        <h3>Report</h3>
+        <pre>{{ reportText }}</pre>
+    </div>
 </div>
+
+<app-chat [sender]="username"></app-chat>
