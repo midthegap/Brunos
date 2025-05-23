@@ -1,7 +1,8 @@
 # Bruno's
 
 *Da Bruno* permette di raccogliere gli ordini per il pranzo da Bruno.
-*Da Bruno* richiede un server REST per la memorizzazione degli ordini.
+
+*Da Bruno* richiede un server REST per la memorizzazione degli ordini, vedi [Bruno's Backend Repo](https://github.com/midthegap/brunos-backend)
 
 ## Building
 
