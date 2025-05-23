@@ -1,11 +1,11 @@
 <div>
-    <div class="chat">
+    <div class="chat" #chatContainer>
         <div *ngFor="let msg of messages">
-            {{ msg.author }}: {{ msg.post }}
+            <span class="author">[{{ msg.author }}]</span> {{ msg.post }}
         </div>
     </div>
     <div class="post">
         <input placeholder="volevo dire..." type="text" [(ngModel)]="post" (keyup.enter)="enter()">
-        <button (click)="enter()">&gt;</button>
+        <button (click)="enter()">&#10148;</button>
     </div>
 </div>
