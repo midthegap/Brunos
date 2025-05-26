@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { OrderService } from '../order.service';
 import { Subscription } from 'rxjs';
 import { ChatComponent } from '../chat/chat.component';
+import { ClipboardService } from '../clipboard.service';
 
 export interface Order {
   name: string;
@@ -21,6 +22,7 @@ export class BrunoListComponent {
   article: string = '';
   orders: Order[] = [];
   toastVisible = false;
+  errorVisible = false;
 
   // subscriptions for orders updates
   private newOrderSub?: Subscription;
@@ -28,7 +30,8 @@ export class BrunoListComponent {
   private resetSub?: Subscription;
   private initSub?: Subscription;
 
-  constructor(private orderService: OrderService) { }
+  constructor(private orderService: OrderService,
+    private clipboard: ClipboardService) { }
 
   ngOnInit() {
     this.newOrderSub = this.orderService.newOrder$.subscribe(order => {
@@ -107,9 +110,14 @@ export class BrunoListComponent {
 
   copyReport() {
     if (this.reportText) {
-      navigator.clipboard.writeText(this.reportText).then(() => {
-        this.toastVisible = true;
-        setTimeout(() => this.toastVisible = false, 3000);
+      this.clipboard.copyToClipboard(this.reportText).then((success) => {
+        if (success) {
+          this.toastVisible = true;
+          setTimeout(() => this.toastVisible = false, 3000);
+        } else {
+          this.errorVisible = true;
+          setTimeout(() => this.errorVisible = false, 3000);
+        }
       });
     }
   }

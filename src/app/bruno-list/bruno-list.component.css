@@ -83,7 +83,7 @@ pre {
 .toast {
     background: lime;
     color: black;
-    font-weight: bolder;
+    font-weight: bold;
     padding: 12px 20px;
     position: fixed;
     top: 32px;
@@ -91,6 +91,20 @@ pre {
     border-radius: 6px;
     border: 3px solid;
     border-color: #3b9e48;
+    z-index: 1000;
+}
+
+.toast-error {
+    background: yellow;
+    color: black;
+    font-weight: bolder;
+    padding: 12px 20px;
+    position: fixed;
+    top: 32px;
+    right: 32px;
+    border-radius: 6px;
+    border: 3px solid;
+    border-color: red;
     z-index: 1000;
 }
 
