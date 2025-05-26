@@ -30,6 +30,10 @@
         <div *ngIf="toastVisible" class="toast">
             Copiato negli appunti!
         </div>
+        <div *ngIf="errorVisible" class="toast-error">
+            Non posso copiare negli appunti :-( 
+            <br>Usa CTRL+C
+        </div>
         <button (click)="copyReport()">Copia rapporto</button>
     </div>
 </div>
