@@ -26,6 +26,7 @@ export class BrunoListComponent {
   private newOrderSub?: Subscription;
   private deleteOrderSub?: Subscription;
   private resetSub?: Subscription;
+  private initSub?: Subscription;
 
   constructor(private orderService: OrderService) { }
 
@@ -34,15 +35,19 @@ export class BrunoListComponent {
       console.log("Received order", order);
       this.orders.push(order);
     });
-    
+
     this.deleteOrderSub = this.orderService.deleteOrder$.subscribe(order => {
       const index = this.orders.findIndex(o => o.name === order.name && o.article === order.article);
       if (index !== -1) {
         this.orders.splice(index, 1);
       }
     });
-    
+
     this.resetSub = this.orderService.reset$.subscribe(() => {
+      this.orders = [];
+    });
+
+    this.initSub = this.orderService.init$.subscribe(() => {
       this.orders = [];
     });
   }
@@ -51,6 +56,7 @@ export class BrunoListComponent {
     this.newOrderSub?.unsubscribe();
     this.deleteOrderSub?.unsubscribe();
     this.resetSub?.unsubscribe();
+    this.initSub?.unsubscribe();
   }
 
   onArticleChange(event: Event) {

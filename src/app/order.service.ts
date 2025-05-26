@@ -22,6 +22,9 @@ export class OrderService {
   private resetSubject = new Subject<void>();
   reset$ = this.resetSubject.asObservable();
 
+  private initSubject = new Subject<void>();
+  init$ = this.initSubject.asObservable();
+
   constructor(private http: HttpClient, private socketIo: Socket) {
     this.registerSocketEvents();
     this.socketIo.connect();
@@ -79,6 +82,7 @@ export class OrderService {
     this.socketIo.on("order", (order: Order) => { this.newOrderSubject.next(order) });
     this.socketIo.on("delete", (order: Order) => { this.deleteSubject.next(order) });
     this.socketIo.on("reset", () => { this.resetSubject.next() });
+    this.socketIo.on("init", () => { this.initSubject.next() });
   }
 
   private onSocketDisconnect() {
