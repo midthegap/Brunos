@@ -53,6 +53,12 @@ export class BrunoListComponent {
     this.initSub = this.orderService.init$.subscribe(() => {
       this.orders = [];
     });
+
+    // restore username, if any
+    const savedName = this.getCookie('bruno-username');
+    if (savedName) {
+      this.username = savedName;
+    }
   }
 
   ngOnDestroy() {
@@ -65,6 +71,12 @@ export class BrunoListComponent {
   onArticleChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.article = target.value;
+  }
+
+  onUsernameChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.username = value;
+    this.setCookie('bruno-username', value, 180);
   }
 
   addOrder() {
@@ -132,5 +144,18 @@ export class BrunoListComponent {
     if (window.confirm('Sei sicuro di voler cancellare tutti gli ordini?')) {
       this.orderService.reset();
     }
+  }
+
+  setCookie(name: string, value: string, days: number) {
+    const oneDayInMillis = 864e5;
+    const expires = new Date(Date.now() + days * oneDayInMillis).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+  }
+
+  getCookie(name: string): string | null {
+    return document.cookie.split('; ').reduce((r, v) => {
+      const parts = v.split('=');
+      return parts[0] === name ? decodeURIComponent(parts[1]) : r
+    }, null as string | null);
   }
 }

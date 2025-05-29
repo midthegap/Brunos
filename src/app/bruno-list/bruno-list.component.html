@@ -1,7 +1,8 @@
 <div class="horizontal">
     <div>
         <div class="horizontal">
-            <input type="text" placeholder="Il tuo nome" [(ngModel)]="username" (keyup.enter)="addOrder()">
+            <input type="text" placeholder="Il tuo nome" [(ngModel)]="username" (keyup.enter)="addOrder()"
+                (input)="onUsernameChange($event)">
             <input type="text" placeholder="Cosa vuoi mangiare?" [(ngModel)]="article" (keyup.enter)="addOrder()">
             <button (click)="addOrder()">Aggiungi</button>
         </div>
@@ -31,7 +32,7 @@
             Copiato negli appunti!
         </div>
         <div *ngIf="errorVisible" class="toast-error">
-            Non posso copiare negli appunti :-( 
+            Non posso copiare negli appunti :-(
             <br>Usa CTRL+C
         </div>
         <button (click)="copyReport()">Copia rapporto</button>
