@@ -1,0 +1,35 @@
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: #333;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 6px;
+  z-index: 1000;
+  opacity: 0.95;
+  font-size: 1.1em;
+}
+
+.toast-success {
+  background: #4caf50;
+}
+
+.toast-error {
+  background: #e53935;
+}
+
+.upload-space {
+  border: 2px solid #aaa;
+  padding: 24px;
+  text-align: center;
+  min-height: 120px;
+}
+
+.commands {
+    margin: 10px;
+    display: flex; 
+    gap: 32px; 
+    align-items: flex-start;
+    width: 100%;
+}

@@ -3,15 +3,15 @@ h1 {
 }
 
 footer {
-    margin: 8px 0px;
-    padding: 4px;
+    margin: 12px 0px;
+    padding: 8px;
     font-style: italic;
     font-size: small;
     background-color: lightgreen;
 }
 
-.main {
-    display: flex; 
-    gap: 32px; 
-    align-items: flex-start;
+.bruno-header {
+    text-decoration: none;
+    color: inherit;
+    cursor: default;
 }

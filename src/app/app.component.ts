@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { BrunoListComponent } from "./bruno-list/bruno-list.component";
-import { MenuComponent } from "./menu/menu.component";
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [BrunoListComponent, MenuComponent],
+  imports: [RouterOutlet, RouterLink],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
