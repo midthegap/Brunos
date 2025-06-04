@@ -1,6 +1,6 @@
 .toast {
   position: fixed;
-  bottom: 32px;
+  top: 32px;
   right: 32px;
   background: #333;
   color: #fff;
@@ -20,7 +20,8 @@
 }
 
 .upload-space {
-  border: 2px solid #aaa;
+  border: 2px solid #ccc;
+  background-color: lightcyan;
   padding: 24px;
   text-align: center;
   min-height: 120px;

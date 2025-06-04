@@ -53,7 +53,8 @@ export class AdminComponent {
         setTimeout(() => this.toastMessage = null, 2000);
       },
       error: (err) => {
-        this.toastMessage = 'Errore upload: ' + err.message;
+        const status = err.status;
+        this.toastMessage = `Errore upload (status ${status}): ${err.message}`;
         this.toastError = true;
         setTimeout(() => this.toastMessage = null, 5000);
       }
