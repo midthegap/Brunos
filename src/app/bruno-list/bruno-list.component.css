@@ -121,6 +121,12 @@ pre {
 
     button {
         width: 100%;
-        margin-top: 6px;
+        margin-top: 2px;
+    }
+
+    .horizontal {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
     }
 }
