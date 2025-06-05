@@ -18,6 +18,17 @@ export class AdminComponent {
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  private handleImageFile(file: File) {
+    if (file.type.startsWith('image/')) {
+      this.imageFile = file;
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imageSrc = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   onPaste(event: ClipboardEvent) {
     const items = event.clipboardData?.items;
     if (!items) return;
@@ -27,16 +38,23 @@ export class AdminComponent {
       if (item.type.startsWith('image/')) {
         const file = item.getAsFile();
         if (file) {
-          this.imageFile = file; // salva il file per l'upload
-          const reader = new FileReader();
-          reader.onload = (e: any) => {
-            this.imageSrc = e.target.result;
-          };
-          reader.readAsDataURL(file);
+          this.handleImageFile(file);
         }
         event.preventDefault();
         break;
       }
+    }
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    if (event.dataTransfer && event.dataTransfer.files.length > 0) {
+      const file = event.dataTransfer.files[0];
+      this.handleImageFile(file);
     }
   }
 
@@ -62,6 +80,8 @@ export class AdminComponent {
   }
 
   goToHome() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/']).then(() => {
+      window.location.reload();
+    });
   }
 }

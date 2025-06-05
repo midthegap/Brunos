@@ -7,13 +7,15 @@
   {{ toastMessage }}
 </div>
 
-<div tabindex="0" (paste)="onPaste($event)" class="upload-space">
-
-  <img [src]="imageSrc"
-    style="max-width:100%; max-height:800px;">
-    
+<div
+  tabindex="0"
+  (paste)="onPaste($event)"
+  (dragover)="onDragOver($event)"
+  (drop)="onDrop($event)"
+  class="upload-space"
+>
+  <img [src]="imageSrc" style="max-width:100%; max-height:800px;">
   <div>
-    Incolla qui l'immagine del men&ugrave; (CTRL+V)
+    Incolla o trascina qui l'immagine del men&ugrave; (CTRL+V o Drag&Drop)
   </div>
-
 </div>
