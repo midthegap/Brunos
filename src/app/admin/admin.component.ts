@@ -96,20 +96,25 @@ export class AdminComponent {
 
   reset() {
     if (window.confirm('Sei sicuro di voler cancellare tutti gli ordini?')) {
-      this.uploadWaitingImage();
+      this.uploadImageFromAssets('waiting.jpg');
       this.menuService.resetMenu();
       this.orderService.reset();
     }
   }
 
-  uploadWaitingImage() {
-    fetch('/assets/waiting.jpg')
+  uploadImageFromAssets(imageName: string) {
+    fetch('/assets/' + imageName)
       .then(response => response.blob())
       .then(blob => {
-        const file = new File([blob], 'waiting.jpg', { type: blob.type });
+        const file = new File([blob], imageName, { type: blob.type });
 
         this.imageFile = file;
         this.uploadImage();
       });
+  }
+
+  close() {
+    this.uploadImageFromAssets('closed.png');
+    //TODO: block new orders
   }
 }
