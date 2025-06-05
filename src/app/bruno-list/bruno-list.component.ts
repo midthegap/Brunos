@@ -30,7 +30,8 @@ export class BrunoListComponent {
   private resetSub?: Subscription;
   private initSub?: Subscription;
 
-  constructor(private orderService: OrderService,
+  constructor(
+    private orderService: OrderService,
     private clipboard: ClipboardService) { }
 
   ngOnInit() {
@@ -137,12 +138,6 @@ export class BrunoListComponent {
   delete(selected: Order) {
     if (window.confirm('Sei sicuro di voler cancellare?')) {
       this.orderService.delete(selected);
-    }
-  }
-
-  reset() {
-    if (window.confirm('Sei sicuro di voler cancellare tutti gli ordini?')) {
-      this.orderService.reset();
     }
   }
 

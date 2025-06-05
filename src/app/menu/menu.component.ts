@@ -13,7 +13,10 @@ import { environment } from '../../environments/environment';
 export class MenuComponent {
   imageSrc: string | null = null;
 
-  constructor(private http: HttpClient, private menuService: MenuService) {
+  constructor(
+    private http: HttpClient, 
+    private menuService: MenuService
+  ) {
     this.loadMenuImage();
 
     this.menuService.menuUpdated$.subscribe(() => {

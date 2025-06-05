@@ -1,6 +1,7 @@
 <div class="commands">
   <button (click)="uploadImage()" [disabled]="!imageFile">Invia immagine</button>
   <button (click)="goToHome()">Ritorna alla home</button>
+  <button (click)="reset()">Reset ordine</button>
 </div>
 
 <div *ngIf="toastMessage" [ngClass]="{'toast-error': toastError, 'toast-success': !toastError}" class="toast">

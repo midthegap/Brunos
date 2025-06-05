@@ -7,11 +7,18 @@ import { Subject } from 'rxjs';
 })
 export class MenuService {
   private menuUpdatedSubject = new Subject<void>();
+  private menuResetSubject = new Subject<void>();
+
   menuUpdated$ = this.menuUpdatedSubject.asObservable();
+  menuReset$ = this.menuResetSubject.asObservable();
 
   constructor(private socketIo: Socket) {
     this.socketIo.on('menu-updated', () => {
       this.menuUpdatedSubject.next();
     });
+  }
+
+  resetMenu() {
+    this.menuResetSubject.next();
   }
 }
