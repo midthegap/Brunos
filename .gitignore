@@ -41,3 +41,6 @@ testem.log
 .DS_Store
 Thumbs.db
 public/menu.jpg
+
+# VS Code settings
+.vscode/settings.json
