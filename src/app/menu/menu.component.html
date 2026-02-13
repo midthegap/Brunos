@@ -1,5 +1,8 @@
 <div class="main">
   <div tabindex="0" style="border:2px solid #aaa; padding:24px; text-align:center; min-height:120px;">
+    @if (menuDate) {
+      <div class="upload-date">Caricata il: {{ menuDate | date:'dd-MM-yyyy HH:mm' }}</div>
+    }
     <img [src]="imageSrc" alt="Qui ci dovrebbe essere il menu di Bruno" style="max-width:100%; max-height:800px;">
   </div>
   <app-bruno-list></app-bruno-list>

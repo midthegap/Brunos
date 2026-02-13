@@ -15,3 +15,10 @@
     align-items: stretch;
   }
 }
+
+.upload-date {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 8px;
+  font-style: italic;
+}
