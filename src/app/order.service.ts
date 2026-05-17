@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Order } from './bruno-list/bruno-list.component';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
-import { throwError, Subject } from 'rxjs';
+import { throwError, BehaviorSubject } from 'rxjs';
 import { environment } from '../environments/environment';
 import { Socket } from 'ngx-socket-io';
+import { User } from './user.service';
+
+export interface Order {
+  id: number;
+  article: string;
+  user: User;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -13,28 +19,17 @@ export class OrderService {
   private readonly baseUrl = environment.apiUrl;
   lastReport: string = '';
 
-  private newOrderSubject = new Subject<Order>();
-  newOrder$ = this.newOrderSubject.asObservable();
-
-  private deleteSubject = new Subject<Order>();
-  deleteOrder$ = this.deleteSubject.asObservable();
-
-  private resetSubject = new Subject<void>();
-  reset$ = this.resetSubject.asObservable();
-
-  private initSubject = new Subject<void>();
-  init$ = this.initSubject.asObservable();
+  private ordersSubject = new BehaviorSubject<Order[]>([]);
+  orders$ = this.ordersSubject.asObservable();
 
   constructor(private http: HttpClient, private socketIo: Socket) {
     this.registerSocketEvents();
     this.socketIo.connect();
+    this.loadInitial();
   }
 
-  create(o: Order) {
-    this.http.post(this.baseUrl + '/api/order', {
-      name: o.name,
-      article: o.article
-    })
+  create(userId: number, article: string) {
+    this.http.post(this.baseUrl + '/api/order', { userId, article })
       .pipe(
         catchError(error => {
           alert('Errore durante l\'invio dell\'ordine!');
@@ -58,7 +53,9 @@ export class OrderService {
   }
 
   delete(order: Order) {
-    return this.http.delete(this.baseUrl + '/api/order', { body: order })
+    return this.http.delete(this.baseUrl + '/api/order', {
+      body: { userId: order.user.id, article: order.article }
+    })
       .pipe(
         catchError(error => {
           alert('Errore nella cancellazione dell\'ordine');
@@ -74,15 +71,30 @@ export class OrderService {
       .subscribe();
   }
 
+  private loadInitial() {
+    this.http.get<Order[]>(this.baseUrl + '/api/order').subscribe(orders => {
+      this.ordersSubject.next(orders);
+    });
+  }
+
   private registerSocketEvents() {
     this.socketIo.on("connect", () => this.onSocketConnect());
     this.socketIo.on("disconnect", () => this.onSocketDisconnect());
 
-    // custom events from socket IO
-    this.socketIo.on("order", (order: Order) => { this.newOrderSubject.next(order) });
-    this.socketIo.on("delete", (order: Order) => { this.deleteSubject.next(order) });
-    this.socketIo.on("reset", () => { this.resetSubject.next() });
-    this.socketIo.on("init", () => { this.initSubject.next() });
+    this.socketIo.on("order", (order: Order) => {
+      this.ordersSubject.next([...this.ordersSubject.value, order]);
+    });
+    this.socketIo.on("delete", (order: Order) => {
+      this.ordersSubject.next(
+        this.ordersSubject.value.filter(o => o.id !== order.id)
+      );
+    });
+    this.socketIo.on("reset", () => {
+      this.ordersSubject.next([]);
+    });
+    this.socketIo.on("init", () => {
+      this.loadInitial();
+    });
   }
 
   private onSocketDisconnect() {

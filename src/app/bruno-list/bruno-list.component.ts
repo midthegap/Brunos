@@ -1,15 +1,11 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { OrderService } from '../order.service';
+import { Order, OrderService } from '../order.service';
+import { User, UserService } from '../user.service';
 import { Subscription } from 'rxjs';
 import { ChatComponent } from '../chat/chat.component';
 import { ClipboardService } from '../clipboard.service';
-
-export interface Order {
-  name: string;
-  article: string;
-}
 
 @Component({
   selector: 'app-bruno-list',
@@ -18,78 +14,72 @@ export interface Order {
   styleUrl: './bruno-list.component.css'
 })
 export class BrunoListComponent {
-  username: string = '';
+  selectedUserId: number | null = null;
   article: string = '';
   orders: Order[] = [];
+  users: User[] = [];
   toastVisible = false;
   errorVisible = false;
 
-  // subscriptions for orders updates
-  private newOrderSub?: Subscription;
-  private deleteOrderSub?: Subscription;
-  private resetSub?: Subscription;
-  private initSub?: Subscription;
+  private ordersSub?: Subscription;
 
   constructor(
     private orderService: OrderService,
+    private userService: UserService,
     private clipboard: ClipboardService) { }
 
   ngOnInit() {
-    this.newOrderSub = this.orderService.newOrder$.subscribe(order => {
-      console.log("Received order", order);
-      this.orders.push(order);
+    this.loadUsers();
+
+    this.ordersSub = this.orderService.orders$.subscribe(orders => {
+      this.orders = orders;
     });
 
-    this.deleteOrderSub = this.orderService.deleteOrder$.subscribe(order => {
-      const index = this.orders.findIndex(o => o.name === order.name && o.article === order.article);
-      if (index !== -1) {
-        this.orders.splice(index, 1);
-      }
-    });
-
-    this.resetSub = this.orderService.reset$.subscribe(() => {
-      this.orders = [];
-    });
-
-    this.initSub = this.orderService.init$.subscribe(() => {
-      this.orders = [];
-    });
-
-    // restore username, if any
-    const savedName = this.getCookie('bruno-username');
-    if (savedName) {
-      this.username = savedName;
+    const saved = this.getCookie('bruno-user-id');
+    if (saved) {
+      this.selectedUserId = Number(saved);
     }
   }
 
   ngOnDestroy() {
-    this.newOrderSub?.unsubscribe();
-    this.deleteOrderSub?.unsubscribe();
-    this.resetSub?.unsubscribe();
-    this.initSub?.unsubscribe();
+    this.ordersSub?.unsubscribe();
   }
 
-  onArticleChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.article = target.value;
+  private loadUsers() {
+    this.userService.getAll().subscribe(users => {
+      this.users = users.filter(u => u.active);
+      if (this.selectedUserId !== null && !this.users.some(u => u.id === this.selectedUserId)) {
+        this.selectedUserId = null;
+      }
+    });
   }
 
-  onUsernameChange(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.username = value;
-    this.setCookie('bruno-username', value, 180);
+  get selectedUserName(): string {
+    const u = this.users.find(u => u.id === this.selectedUserId);
+    return u ? u.name : '';
+  }
+
+  onUserIdChange(id: number | null) {
+    if (id !== null) {
+      this.setCookie('bruno-user-id', String(id), 180);
+    }
   }
 
   addOrder() {
-    this.add(this.username, this.article);
+    this.add(this.selectedUserId, this.article);
   }
 
-  private add(name: string, article: string) {
-    name = name.trim();
+  private add(userId: number | null, article: string) {
     article = article.trim();
 
-    if (name.length == 0) {
-      alert('Metti il nome, furbetto!');
+    if (userId === null) {
+      alert('Seleziona il tuo nome dalla lista!');
+      return;
+    }
+
+    const user = this.users.find(u => u.id === userId);
+    if (!user) {
+      alert('Utente non trovato. Ricarica la pagina.');
       return;
     }
 
@@ -97,20 +87,18 @@ export class BrunoListComponent {
       return;
     }
 
-    if (this.orders.some(order => order.name.toLowerCase() === name.toLowerCase())) {
-      alert("C'e' gia' un ordine per " + name + ".\nCancella prima quello vecchio.");
+    if (this.orders.some(o => o.user.id === userId)) {
+      alert("C'e' gia' un ordine per " + user.name + ".\nCancella prima quello vecchio.");
       return;
     }
 
-    const newOrder: Order = { name: name, article: article };
-    this.orderService.create(newOrder);
+    this.orderService.create(userId, article);
 
-    // clear input
     this.article = '';
   }
 
   metoo(selected: Order) {
-    this.add(this.username, selected.article);
+    this.add(this.selectedUserId, selected.article);
   }
 
   report() {

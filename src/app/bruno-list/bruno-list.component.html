@@ -1,15 +1,17 @@
 <div class="horizontal">
     <div>
         <div class="horizontal">
-            <input type="text" placeholder="Il tuo nome" [(ngModel)]="username" (keyup.enter)="addOrder()"
-                (input)="onUsernameChange($event)">
+            <select [(ngModel)]="selectedUserId" (ngModelChange)="onUserIdChange($event)">
+                <option [ngValue]="null" disabled>Chi sei?</option>
+                <option *ngFor="let user of users" [ngValue]="user.id">{{ user.name }}</option>
+            </select>
             <input type="text" placeholder="Cosa vuoi mangiare?" [(ngModel)]="article" (keyup.enter)="addOrder()">
             <button (click)="addOrder()">Aggiungi</button>
         </div>
         <div>
             <ul>
                 <li *ngFor="let order of orders">
-                    <span>{{ order.name }}: {{ order.article }}</span>
+                    <span>{{ order.user.name }}: {{ order.article }}</span>
                     <span>
                         &nbsp;<button (click)="metoo(order)">Anch'io!</button>
                         &nbsp;<button (click)="delete(order)">Cancella</button>
@@ -40,4 +42,4 @@
 
 <hr>
 
-<app-chat [sender]="username"></app-chat>
+<app-chat [sender]="selectedUserName"></app-chat>

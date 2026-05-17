@@ -9,7 +9,8 @@ body {
     /* gap: 8px; */
 }
 
-input[type="text"] {
+input[type="text"],
+select {
     padding: 4px 4px;
     margin-right: 8px;
     border: 1px solid #bdbdbd;
@@ -17,9 +18,11 @@ input[type="text"] {
     margin-bottom: 2px;
     font-size: 1rem;
     transition: border-color 0.2s;
+    background: white;
 }
 
-input[type="text"]:focus {
+input[type="text"]:focus,
+select:focus {
     border-color: #4caf50;
     outline: none;
 }

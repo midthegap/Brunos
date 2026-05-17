@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { NgClass, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { MenuService } from '../menu.service';
 import { OrderService } from '../order.service';
+import { User, UserService } from '../user.service';
 
 @Component({
   selector: 'app-admin',
-  imports: [NgClass, NgIf],
+  imports: [NgClass, NgFor, NgIf, FormsModule],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
@@ -18,12 +20,18 @@ export class AdminComponent {
   toastMessage: string | null = null;
   toastError: boolean = false;
 
+  users: User[] = [];
+  newUserName: string = '';
+
   constructor(
     private http: HttpClient,
     private router: Router,
     private menuService: MenuService,
-    private orderService: OrderService
-  ) { }
+    private orderService: OrderService,
+    private userService: UserService
+  ) {
+    this.loadUsers();
+  }
 
   private handleImageFile(file: File) {
     if (file.type.startsWith('image/')) {
@@ -116,5 +124,57 @@ export class AdminComponent {
   close() {
     this.uploadImageFromAssets('closed.png');
     //TODO: block new orders
+  }
+
+  loadUsers() {
+    this.userService.getAll().subscribe({
+      next: users => this.users = users,
+      error: err => this.showError(`Errore caricamento utenti: ${err.message}`)
+    });
+  }
+
+  createUser() {
+    const name = this.newUserName.trim();
+    if (!name) return;
+    if (this.users.some(u => u.name.toLowerCase() === name.toLowerCase())) {
+      this.showError(`Esiste già un utente di nome "${name}".`);
+      return;
+    }
+    this.userService.create(name).subscribe({
+      next: user => {
+        this.users.push(user);
+        this.newUserName = '';
+      },
+      error: err => this.showError(`Errore creazione utente: ${err.message}`)
+    });
+  }
+
+  deleteUser(user: User) {
+    if (!window.confirm(`Cancellare l'utente "${user.name}"? Eventuali ordini associati potrebbero impedirne la cancellazione.`)) {
+      return;
+    }
+    this.userService.delete(user.id).subscribe({
+      next: () => {
+        this.users = this.users.filter(u => u.id !== user.id);
+      },
+      error: err => this.showError(`Errore cancellazione utente: ${err.message}`)
+    });
+  }
+
+  toggleActive(user: User) {
+    const next = !user.active;
+    this.userService.setActive(user.id, next).subscribe({
+      next: updated => {
+        const i = this.users.findIndex(u => u.id === user.id);
+        if (i !== -1) this.users[i] = updated;
+      },
+      error: err => this.showError(`Errore aggiornamento utente: ${err.message}`)
+    });
+  }
+
+  private showError(message: string) {
+    this.toastMessage = message;
+    this.toastError = true;
+    setTimeout(() => this.toastMessage = null, 5000);
   }
 }
